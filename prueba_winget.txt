@@ -1,0 +1,182 @@
+
+   - 
+   \ 
+   | 
+   / 
+                                                                                                                        
+
+   - 
+   \ 
+   | 
+                                                                                                                        
+Nombre                                  Id                                      Versi├│n          Disponible     Origen
+-----------------------------------------------------------------------------------------------------------------------
+draw.io 30.0.1                          JGraph.Draw                             30.0.1           30.0.2         winget
+AMD Software                            ARP\Machine\X64\AMD Catalyst Install MÔÇª 25.8.1                          
+Audacity 3.7.7                          Audacity.Audacity                       3.7.7                           winget
+DBeaver 26.0.5                          DBeaver.DBeaver.Community               26.0.5                          winget
+GIMP 3.2.4                              GIMP.GIMP.3                             3.2.4.0                         winget
+Git                                     ARP\Machine\X64\Git_is1                 2.54.0                          
+Mozilla Firefox (x64 es-CL)             Mozilla.Firefox.es-CL                   150.0.3          151.0          winget
+Mozilla Maintenance Service             ARP\Machine\X64\MozillaMaintenanceServÔÇª 150.0.3                         
+MuseHub                                 Muse.MuseHub                            2.7.1.2150                      winget
+Aplicaciones de Microsoft 365 para empÔÇª ARP\Machine\X64\O365ProPlusRetail - esÔÇª 16.0.19929.20172                
+OCS Inventory NG Agent 2.11.0.1         OCSInventoryNG.WindowsAgent             2.11.0.1                        winget
+Microsoft OneDrive                      Microsoft.OneDrive                      26.074.0420.0001                winget
+Recuva                                  XP8LGT18LSS4QS                          1.53                            msstore
+RustDesk                                ARP\Machine\X64\RustDesk                1.4.6                           
+VLC media player                        VideoLAN.VLC                            3.0.23                          winget
+Oracle VirtualBox 7.2.8                 Oracle.VirtualBox                       7.2.8                           winget
+Google Drive                            Google.GoogleDrive                      125.0.0.0                       winget
+PowerShell 7-x64                        Microsoft.PowerShell                    7.6.1.0                         winget
+PowerShell 7.5.5.0-x64                  Microsoft.PowerShell                    7.5.5.0                         winget
+Microsoft Teams Meeting Add-in for MicÔÇª ARP\Machine\X64\{A7AB73A3-CB10-4AA5-9DÔÇª 1.26.08901                      
+Adobe Acrobat (64-bit)                  ARP\Machine\X64\{AC76BA86-1034-1033-77ÔÇª 26.001.21563                    
+Microsoft Update Health Tools           ARP\Machine\X64\{C6FD611E-7EFE-488C-A0ÔÇª 5.72.0.0                        
+FortiClient VPN                         ARP\Machine\X64\{CEAB81B8-1682-456F-A3ÔÇª 7.2.8.1140                      
+Google Earth Pro                        Google.EarthPro                         7.3.7.1155                      winget
+AnyDesk                                 AnyDesk.AnyDesk                         ad 9.7.3                        winget
+Google Chrome                           Google.Chrome.EXE                       148.0.7778.178   148.0.7778.179 winget
+Lazesoft Recovery Suite 5.1 Home EditiÔÇª Lazesoft.LazesoftRecovery               5.1                             winget
+Copilot                                 ARP\Machine\X86\Microsoft Copilot       148.0.3967.70                   
+Microsoft Edge                          Microsoft.Edge                          148.0.3967.70                   winget
+Myth II                                 ARP\Machine\X86\Myth II                 Unknown                         
+OpenAL                                  CreativeTechnology.OpenAL               Unknown          1.1            winget
+Comet                                   Perplexity.Comet                        147.0.7727.1860                 winget
+Comet                                   Perplexity.Comet                        141.0.7390.23969                winget
+Soundcraft Multi-channel USB Audio v4.ÔÇª ARP\Machine\X86\Software_Soundcraft_SoÔÇª 4.82.0                          
+SpeedFan (remove only)                  Almico.SpeedFan                         Unknown          4.52           winget
+Lenovo System Update                    Lenovo.SystemUpdate                     5.08.03.59                      winget
+Lenovo Vantage Service                  ARP\Machine\X86\VantageSRV_is1          4.2601.21.0                     
+Kdenlive                                KDE.Kdenlive                            26.04.1                         winget
+Microsoft Visual C++ 2013 RedistributaÔÇª Microsoft.VCRedist.2013.x64             12.0.40664.0                    winget
+Advanced IP Scanner 2.5.1               Famatech.AdvancedIPScanner              2.5.4594.1                      winget
+MuseFX version 1.0                      ARP\Machine\X86\{5EBC9761-5ED6-421D-BDÔÇª 1.0                             
+Microsoft Visual C++ 2015-2022 RedistrÔÇª Microsoft.VCRedist.2015+.x86            14.51.36231.0                   winget
+Realtek Ethernet Controller Driver      ARP\Machine\X86\{8833FFB6-5B0C-4764-81ÔÇª 10.71.312.2024                  
+IZArc 4.6                               IZArc.IZArc                             4.6                             winget
+Soundcraft USB Audio Control Panel 2.0ÔÇª ARP\Machine\X86\{A64D4187-7FDE-4902-82ÔÇª 2.0.4                           
+MobaXterm                               Mobatek.MobaXterm                       26.3.0.5486                     winget
+Kaspersky Endpoint Security para WindoÔÇª ARP\Machine\X86\{C3CCF7FB-0F9D-453C-B0ÔÇª 12.12.0.522                     
+UltraViewer version 6.6.124             DucFabulous.UltraViewer                 6.6.124                         winget
+Microsoft PowerBI Desktop (x64)         Microsoft.PowerBI                       2.153.1206.0                    winget
+Microsoft Visual C++ 2015-2022 RedistrÔÇª Microsoft.VCRedist.2015+.x64            14.51.36231.0                   winget
+Bizagi Modeler                          ARP\User\X64\InstallShield_{499849ff-8ÔÇª 4.0.0128                        
+Opera Stable 131.0.5877.55              Opera.Opera                             131.0.5877.55                   winget
+Zoom Workplace                          Zoom.Zoom.EXE                           7.0.2 (34412)    7.0.5 (38856)  winget
+Lenovo Service Bridge                   Lenovo.ServiceBridge                    5.0.2.21                        winget
+Microsoft Visual Studio Code (User)     Microsoft.VisualStudioCode              1.120.0                         winget
+WhatsApp                                MSIX\5319275A.WhatsAppDesktop_2.2616.1ÔÇª 2.2616.100.0                    
+HP Smart                                MSIX\AD2F1837.HPPrinterControl_164.1.1ÔÇª 164.1.1128.0                    
+Adobe Acrobat Reader                    MSIX\AdobeAcrobatReaderCoreApp_26.0.0.ÔÇª 26.0.0.1                        
+AMD Radeon Software                     MSIX\AdvancedMicroDevicesInc-RSXCM_22.ÔÇª 22.10.0.0                       
+Apple Music                             MSIX\AppleInc.AppleMusicWin_1.1540.230ÔÇª 1.1540.23042.0                  
+Ubuntu 24.04.1 LTS                      Canonical.Ubuntu.2404                   2404.1.31.0                     winget
+Affinity                                Canva.Affinity                          3.2.1.4425                      winget
+AnyConnect                              MSIX\CiscoSystems.AnyConnect_5.1.7093.ÔÇª 5.1.7093.0                      
+Microsoft Clipchamp                     MSIX\Clipchamp.Clipchamp_4.5.10520.0_xÔÇª 4.5.10520.0                     
+Lenovo Vantage                          MSIX\E046963F.LenovoCompanion_10.2603.ÔÇª 10.2603.12.0                    
+Instagram                               MSIX\Facebook.InstagramBeta_42.0.23.0_ÔÇª 42.0.23.0                       
+iLovePDF - PDF Reader and Editor        MSIX\ILOVEPDFS.L.iLovePDF-PDFReaderandÔÇª 2.2.16.0                        
+ShellEx Package                         MSIX\Kaspersky.ShellEx24_1.0.0.13_x64_ÔÇª 1.0.0.13                        
+Microsoft Teams                         Microsoft.Teams                         26106.1906.4665ÔÇª 26106.1911.47ÔÇª winget
+AV1 Video Extension                     MSIX\Microsoft.AV1VideoExtension_2.0.7ÔÇª 2.0.7.0                         
+Extensi├│n de v├¡deo del codificador AVC  MSIX\Microsoft.AVCEncoderVideoExtensioÔÇª 1.1.23.0                        
+Mejoras de compatibilidad de aplicacioÔÇª MSIX\Microsoft.ApplicationCompatibilitÔÇª 1.2511.9.0                      
+Noticias                                MSIX\Microsoft.BingNews_4.55.62231.0_xÔÇª 4.55.62231.0                    
+Microsoft Bing                          MSIX\Microsoft.BingSearch_1.1.43.0_x64ÔÇª 1.1.43.0                        
+MSN El Tiempo                           MSIX\Microsoft.BingWeather_4.54.63040.ÔÇª 4.54.63040.0                    
+Copilot                                 MSIX\Microsoft.Copilot_148.0.3967.70_nÔÇª 148.0.3967.70                   
+Instalador de aplicaci├│n                Microsoft.AppInstaller                  1.28.240.0                      winget
+Microsoft Edge para Game Bar            MSIX\Microsoft.Edge.GameAssist_1.0.401ÔÇª 1.0.4019.0                      
+Xbox                                    MSIX\Microsoft.GamingApp_2605.1001.13.ÔÇª 2605.1001.13.0                  
+Obtener ayuda                           MSIX\Microsoft.GetHelp_10.2409.41132.0ÔÇª 10.2409.41132.0                 
+Extensi├│n de im├ígenes HEIF              MSIX\Microsoft.HEIFImageExtension_1.2.ÔÇª 1.2.30.0                        
+Extensiones de v├¡deo HEVC del fabricanÔÇª MSIX\Microsoft.HEVCVideoExtension_2.5.ÔÇª 2.5.10.0                        
+Paquete de experiencia local en espa├▒oÔÇª MSIX\Microsoft.LanguageExperiencePackeÔÇª 26100.171.259.0                 
+Paquete de experiencia local en espa├▒oÔÇª MSIX\Microsoft.LanguageExperiencePackeÔÇª 26100.127.240.0                 
+Microsoft 365 companion apps            MSIX\Microsoft.M365Companions_2.2604.1ÔÇª 2.2604.14001.0                  
+Extensi├│n de v├¡deo MPEG-2               MSIX\Microsoft.MPEG2VideoExtension_1.2ÔÇª 1.2.13.0                        
+Microsoft Edge                          MSIX\Microsoft.MicrosoftEdge.Stable_14ÔÇª 148.0.3967.70                   
+Microsoft 365 Copilot                   MSIX\Microsoft.MicrosoftOfficeHub_19.2ÔÇª 19.2605.45031.0                 
+Solitaire & Casual Games                MSIX\Microsoft.MicrosoftSolitaireColleÔÇª 4.25.4290.0                     
+Notas r├ípidas de Microsoft              MSIX\Microsoft.MicrosoftStickyNotes_4.ÔÇª 4.0.6104.0                      
+Microsoft .Net Native Framework PackagÔÇª MSIX\Microsoft.NET.Native.Framework.2.ÔÇª 2.2.29512.0                     
+Microsoft .Net Native Framework PackagÔÇª MSIX\Microsoft.NET.Native.Framework.2.ÔÇª 2.2.29512.0                     
+Microsoft .Net Native Runtime Package ÔÇª Microsoft.DotNet.Native.Runtime         2.2.28604.0                     winget
+Microsoft .Net Native Runtime Package ÔÇª Microsoft.DotNet.Native.Runtime         2.2.28604.0                     winget
+Microsoft.Office.ActionsServer          MSIX\Microsoft.Office.ActionsServer_16ÔÇª 16.0.19929.20172                
+OfficePushNotificationsUtility          MSIX\Microsoft.OfficePushNotificationUÔÇª 16.0.19929.20172                
+OneDrive                                MSIX\Microsoft.OneDriveSync_26074.420.ÔÇª 26074.420.1.0                   
+Outlook for Windows                     MSIX\Microsoft.OutlookForWindows_1.202ÔÇª 1.2026.210.300                  
+Paint                                   MSIX\Microsoft.Paint_11.2601.441.0_x64ÔÇª 11.2601.441.0                   
+Contactos de Microsoft                  MSIX\Microsoft.People_10.2202.100.0_x6ÔÇª 10.2202.100.0                   
+Power Automate                          MSIX\Microsoft.PowerAutomateDesktop_1.ÔÇª 1.0.2094.0                      
+Raw Image Extension                     MSIX\Microsoft.RawImageExtension_2.5.7ÔÇª 2.5.7.0                         
+Herramienta Recortes                    MSIX\Microsoft.ScreenSketch_11.2602.47ÔÇª 11.2602.47.0                    
+Seguridad de Windows                    MSIX\Microsoft.SecHealthUI_1000.29554.ÔÇª 1000.29554.1001ÔÇª                
+Microsoft Engagement Framework          MSIX\Microsoft.Services.Store.EngagemeÔÇª 10.0.23012.0                    
+Microsoft Engagement Framework          MSIX\Microsoft.Services.Store.EngagemeÔÇª 10.0.23012.0                    
+Aplicaci├│n Experiencias de inicio       MSIX\Microsoft.StartExperiencesApp_1.2ÔÇª 1.264.3.0                       
+Host de la experiencia de Store         MSIX\Microsoft.StorePurchaseApp_22603.ÔÇª 22603.1401.2.0                  
+Microsoft To Do                         MSIX\Microsoft.Todos_0.175.6901.0_x64_ÔÇª 0.175.6901.0                    
+Microsoft.UI.Xaml.2.7                   Microsoft.UI.Xaml.2.7                   7.2409.9001.0                   winget
+Microsoft.UI.Xaml.2.7                   Microsoft.UI.Xaml.2.7                   7.2409.9001.0                   winget
+Microsoft.UI.Xaml.2.8                   Microsoft.UI.Xaml.2.8                   8.2511.26001.0                  winget
+Microsoft.UI.Xaml.2.8                   Microsoft.UI.Xaml.2.8                   8.2501.31001.0                  winget
+Microsoft Visual C++ 2015 UWP Desktop ÔÇª Microsoft.VCLibs.Desktop.14             14.0.33728.0                    winget
+Microsoft Visual C++ 2015 UWP Desktop ÔÇª Microsoft.VCLibs.Desktop.14             14.0.33728.0                    winget
+Microsoft Visual C++ 2015 UWP Runtime ÔÇª Microsoft.VCLibs.14                     14.0.33519.0                    winget
+Microsoft Visual C++ 2015 UWP Runtime ÔÇª Microsoft.VCLibs.14                     14.0.33519.0                    winget
+Extensiones de v├¡deo VP9                MSIX\Microsoft.VP9VideoExtensions_1.2.ÔÇª 1.2.13.0                        
+Visual Studio Code                      MSIX\Microsoft.VisualStudioCode_1.0.12ÔÇª 1.0.120.0                       
+Extensiones de multimedia web           MSIX\Microsoft.WebMediaExtensions_2.1.ÔÇª 2.1.26.0                        
+Extensi├│n de imagen WebP                MSIX\Microsoft.WebpImageExtension_1.2.ÔÇª 1.2.14.0                        
+Widgets Platform Runtime                MSIX\Microsoft.WidgetsPlatformRuntime_ÔÇª 1.6.15.0                        
+Windows Advanced Settings               MSIX\Microsoft.Windows.DevHome_0.2100.ÔÇª 0.2100.858.0                    
+Fotos de Microsoft                      MSIX\Microsoft.Windows.Photos_2026.110ÔÇª 2026.11020.2000ÔÇª                
+Reloj de Windows                        MSIX\Microsoft.WindowsAlarms_1.1.85.0_ÔÇª 1.1.85.0                        
+WindowsAppRuntime.1.2                   Microsoft.WindowsAppRuntime.1.2         > 1.2.2                         winget
+WindowsAppRuntime.1.2                   Microsoft.WindowsAppRuntime.1.2         > 1.2.2                         winget
+WindowsAppRuntime.1.4                   Microsoft.WindowsAppRuntime.1.4         > 1.4.5                         winget
+WindowsAppRuntime.1.4                   Microsoft.WindowsAppRuntime.1.4         > 1.4.5                         winget
+WindowsAppRuntime.1.5                   Microsoft.WindowsAppRuntime.1.5         > 1.5.8                         winget
+WindowsAppRuntime.1.5                   Microsoft.WindowsAppRuntime.1.5         > 1.5.8                         winget
+WindowsAppRuntime.1.6                   Microsoft.WindowsAppRuntime.1.6         1.6.9                           winget
+WindowsAppRuntime.1.6                   Microsoft.WindowsAppRuntime.1.6         1.6.9                           winget
+WindowsAppRuntime.1.7                   Microsoft.WindowsAppRuntime.1.7         1.7.9                           winget
+WindowsAppRuntime.1.7                   Microsoft.WindowsAppRuntime.1.7         1.7.9                           winget
+WindowsAppRuntime.1.7                   Microsoft.WindowsAppRuntime.1.7         1.7.8                           winget
+WindowsAppRuntime.1.8                   Microsoft.WindowsAppRuntime.1.8         8000.859.21.0                   winget
+WindowsAppRuntime.1.8                   Microsoft.WindowsAppRuntime.1.8         8000.859.21.0                   winget
+WindowsAppRuntime.1.8                   Microsoft.WindowsAppRuntime.1.8         8000.836.2153.0                 winget
+WindowsAppRuntime.1.8                   Microsoft.WindowsAppRuntime.1.8         8000.806.2252.0                 winget
+WindowsAppRuntime.1.8                   Microsoft.WindowsAppRuntime.1.8         8000.770.947.0                  winget
+WindowsAppRuntime.1.8                   Microsoft.WindowsAppRuntime.1.8         8000.731.1532.0                 winget
+Calculadora de Windows                  MSIX\Microsoft.WindowsCalculator_11.25ÔÇª 11.2508.4.0                     
+C├ímara de Windows                       MSIX\Microsoft.WindowsCamera_2025.2510ÔÇª 2025.2510.2.0                   
+Centro de opiniones                     MSIX\Microsoft.WindowsFeedbackHub_1.26ÔÇª 1.2603.26301.0                  
+Mapas de Windows                        MSIX\Microsoft.WindowsMaps_1.0.65.0_x6ÔÇª 1.0.65.0                        
+Bloc de notas de Windows                MSIX\Microsoft.WindowsNotepad_11.2512.ÔÇª 11.2512.29.0                    
+Grabadora de sonidos de Windows         MSIX\Microsoft.WindowsSoundRecorder_1.ÔÇª 1.1.86.0                        
+Microsoft Store                         MSIX\Microsoft.WindowsStore_22604.1401ÔÇª 22604.1401.5.0                  
+Terminal Windows                        Microsoft.WindowsTerminal               1.24.11321.0                    winget
+Windows Package Manager Source (wingetÔÇª MSIX\Microsoft.Winget.Source_2026.520.ÔÇª 2026.520.133.10                 
+Xbox TCUI                               MSIX\Microsoft.Xbox.TCUI_1.24.10001.0_ÔÇª 1.24.10001.0                    
+Xbox Game Bar Plugin                    MSIX\Microsoft.XboxGameOverlay_1.54.40ÔÇª 1.54.4001.0                     
+Game Bar                                MSIX\Microsoft.XboxGamingOverlay_7.326ÔÇª 7.326.5041.0                    
+Xbox Identity Provider                  MSIX\Microsoft.XboxIdentityProvider_12ÔÇª 12.130.16001.0                  
+Game Speech Window                      MSIX\Microsoft.XboxSpeechToTextOverlayÔÇª 1.111.30001.0                   
+Enlace M├│vil                            MSIX\Microsoft.YourPhone_1.26032.102.0ÔÇª 1.26032.102.0                   
+Reproductor multimedia de Windows       MSIX\Microsoft.ZuneMusic_11.2603.12.0_ÔÇª 11.2603.12.0                    
+Pel├¡culas y TV                          MSIX\Microsoft.ZuneVideo_10.25121.1005ÔÇª 10.25121.10051.0                
+Asistencia r├ípida                       MSIX\MicrosoftCorporationII.QuickAssisÔÇª 2.0.35.0                        
+WinAppRuntime.Main.1.8                  MSIX\MicrosoftCorporationII.WinAppRuntÔÇª 8000.836.2153.0                 
+Subsistema de Windows para Linux        Microsoft.WSL                           2.7.3.0                         winget
+Windows Web Experience Pack             MSIX\MicrosoftWindows.Client.WebExperiÔÇª 526.7600.30.0                   
+Host de experiencia entre dispositivos  MSIX\MicrosoftWindows.CrossDevice_1.26ÔÇª 1.26032.83.0                    
+Realtek Audio Control                   MSIX\RealtekSemiconductorCorp.RealtekAÔÇª 1.1.137.0                       
+Spotify: m├║sica y p├│dcasts              MSIX\SpotifyAB.SpotifyMusic_1.289.539.ÔÇª 1.289.539.0                     
+Local AI Manager for Microsoft 365      MSIX\aimgr_0.20.47.0_x64__8wekyb3d8bbwe 0.20.47.0                       
+Sweet Home 3D                           MSIX\eTeks.SweetHome3D_7.9.263.0_x64__ÔÇª 7.9.263.0                       
+Correo y Calendario                     MSIX\microsoft.windowscommunicationsapÔÇª 16005.14326.223ÔÇª                

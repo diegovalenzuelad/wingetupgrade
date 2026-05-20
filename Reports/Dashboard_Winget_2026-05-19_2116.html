@@ -1,0 +1,506 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard Winget Â· PC-CASA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root { --navy: #03122E; --gold: #C8A84B; --green: #1db954; --red: #e63946; --bg: #eef1f6; --surface: #ffffff; --border: #e2e8f0; --text: #1e293b; --muted: #64748b; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; margin:0; padding:0; }
+    .header { background: var(--navy); color: white; padding: 36px 48px; }
+    .header-title { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
+    .header-sub { font-size: 13px; opacity: .6; margin-bottom: 20px; }
+    .meta-row { display: flex; gap: 8px; margin-bottom: 18px; }
+    .meta-chip { background: rgba(255,255,255,.1); border-radius: 6px; padding: 4px 12px; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+    .status-pill { display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; background: #1db954; }
+    .main { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+    .kpi-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 28px; }
+    .kpi-card { background: var(--surface); border-radius: 12px; padding: 20px; border-top: 3px solid var(--border); box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+    .kpi-value { font-size: 36px; font-weight: 700; color: var(--navy); }
+    .kpi-label { font-size: 11px; text-transform: uppercase; color: var(--muted); }
+    .body-grid { display: grid; grid-template-columns: 260px 1fr; gap: 20px; }
+    .card { background: var(--surface); border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,.06); overflow: hidden; }
+    .card-header { background: var(--navy); color: white; padding: 13px 18px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .card-body { padding: 20px; }
+    .chart-wrap { position: relative; }
+    .chart-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -55%); text-align: center; }
+    .chart-pct { font-size: 28px; font-weight: 700; color: var(--navy); }
+    table { width: 100%; border-collapse: collapse; }
+    thead th { background: #f8fafc; color: var(--muted); font-size: 11px; font-weight: 600; text-transform: uppercase; padding: 10px 14px; border-bottom: 2px solid var(--border); text-align: left; }
+    tbody td { padding: 10px 14px; border-bottom: 1px solid #f1f5f9; }
+    code { font-family: 'JetBrains Mono', monospace; font-size: 11px; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; }
+    .badge-success { background: #d1fae5; color: #065f46; }
+    .empty-row { text-align: center; padding: 32px !important; color: var(--muted); font-style: italic; }
+    .footer { text-align: center; padding: 36px; color: var(--muted); font-size: 12px; border-top: 1px solid var(--border); margin-top: 40px; }
+  </style>
+</head>
+<body>
+<div class="header">
+  <div class="header-title">Dashboard de Actualizaciones Winget</div>
+  <div class="header-sub">Unidad de Informatica. Facultad de Comunicaciones. UC</div>
+  <div class="meta-row">
+    <span class="meta-chip">Equipo: PC-CASA</span>
+    <span class="meta-chip">Fecha: 19-05-2026 21:16</span>
+    <span class="meta-chip">Duracion: 0.2 min</span>
+  </div>
+  <span class="status-pill">Proceso: EXITOSO</span>
+</div>
+<div class="main">
+  <div class="kpi-grid">
+    <div class="kpi-card"><div class="kpi-value">59</div><div class="kpi-label">Total apps</div></div>
+    <div class="kpi-card"><div class="kpi-value">59</div><div class="kpi-label">Actualizadas</div></div>
+    <div class="kpi-card"><div class="kpi-value">0</div><div class="kpi-label">Fallidas</div></div>
+    <div class="kpi-card"><div class="kpi-value">0</div><div class="kpi-label">Omitidas</div></div>
+    <div class="kpi-card"><div class="kpi-value">0.2 m</div><div class="kpi-label">Duracion</div></div>
+  </div>
+  <div class="body-grid">
+    <div class="card">
+      <div class="card-header">Distribucion</div>
+      <div class="card-body">
+        <div class="chart-wrap">
+          <canvas id="donut" height="220"></canvas>
+          <div class="chart-center"><div class="chart-pct">100%</div><div>exito</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">Detalle por aplicacion</div>
+      <table>
+        <thead><tr><th>Aplicacion</th><th>ID</th><th>Version anterior</th><th>Version nueva</th><th>Estado</th></tr></thead>
+        <tbody>        <tr>
+            <td>draw.io 30.0.1</td>
+            <td><code>JGraphDraw</code></td>
+            <td>30.0.1</td>
+            <td>30.0.2</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>Audacity 3.7.7</td>
+            <td><code>AudacityAudacity</code></td>
+            <td>3.7.7</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>DBeaver 26.0.5</td>
+            <td><code>DBeaverDBeaverCommunity</code></td>
+            <td>26.0.5</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>GIMP 3.2.4</td>
+            <td><code>GIMPGIMP3</code></td>
+            <td>3.2.4.0</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>Mozilla Firefox (x64 es-CL)</td>
+            <td><code>MozillaFirefoxes-CL</code></td>
+            <td>150.0.3</td>
+            <td>151.0</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>MuseHub</td>
+            <td><code>MuseMuseHub</code></td>
+            <td>2.7.1.2150</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>OCS Inventory NG Agent 2.11.0.1</td>
+            <td><code>OCSInventoryNGWindowsAgent</code></td>
+            <td>2.11.0.1</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>Microsoft OneDrive</td>
+            <td><code>MicrosoftOneDrive</code></td>
+            <td>26.074.0420.0001</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>Recuva</td>
+            <td><code>XP8LGT18LSS4QS</code></td>
+            <td>1.53</td>
+            <td>msstore</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>VLC media player</td>
+            <td><code>VideoLANVLC</code></td>
+            <td>3.0.23</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>Oracle VirtualBox 7.2.8</td>
+            <td><code>OracleVirtualBox</code></td>
+            <td>7.2.8</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>Google Drive</td>
+            <td><code>GoogleGoogleDrive</code></td>
+            <td>125.0.0.0</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>PowerShell 7-x64</td>
+            <td><code>MicrosoftPowerShell</code></td>
+            <td>7.6.1.0</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>PowerShell 7.5.5.0-x64</td>
+            <td><code>MicrosoftPowerShell</code></td>
+            <td>7.5.5.0</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>Google Earth Pro</td>
+            <td><code>GoogleEarthPro</code></td>
+            <td>7.3.7.1155</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>AnyDesk</td>
+            <td><code>AnyDeskAnyDesk</code></td>
+            <td>ad 9.7.3</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>Google Chrome</td>
+            <td><code>GoogleChromeEXE</code></td>
+            <td>148.0.7778.178</td>
+            <td>148.0.7778.179 winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>Microsoft Edge</td>
+            <td><code>MicrosoftEdge</code></td>
+            <td>148.0.3967.70</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>OpenAL</td>
+            <td><code>CreativeTechnologyOpenAL</code></td>
+            <td>Unknown</td>
+            <td>1.1</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>Comet</td>
+            <td><code>PerplexityComet</code></td>
+            <td>147.0.7727.1860</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>Comet</td>
+            <td><code>PerplexityComet</code></td>
+            <td>141.0.7390.23969</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>SpeedFan (remove only)</td>
+            <td><code>AlmicoSpeedFan</code></td>
+            <td>Unknown</td>
+            <td>4.52</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>Lenovo System Update</td>
+            <td><code>LenovoSystemUpdate</code></td>
+            <td>5.08.03.59</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>Kdenlive</td>
+            <td><code>KDEKdenlive</code></td>
+            <td>26.04.1</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>Advanced IP Scanner 2.5.1</td>
+            <td><code>FamatechAdvancedIPScanner</code></td>
+            <td>2.5.4594.1</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>IZArc 4.6</td>
+            <td><code>IZArcIZArc</code></td>
+            <td>4.6</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>MobaXterm</td>
+            <td><code>MobatekMobaXterm</code></td>
+            <td>26.3.0.5486</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>UltraViewer version 6.6.124</td>
+            <td><code>DucFabulousUltraViewer</code></td>
+            <td>6.6.124</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>Microsoft PowerBI Desktop (x64)</td>
+            <td><code>MicrosoftPowerBI</code></td>
+            <td>2.153.1206.0</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>Opera Stable 131.0.5877.55</td>
+            <td><code>OperaOpera</code></td>
+            <td>131.0.5877.55</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>Zoom Workplace</td>
+            <td><code>ZoomZoomEXE</code></td>
+            <td>7.0.2 (34412)</td>
+            <td>7.0.5 (38856)</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>Lenovo Service Bridge</td>
+            <td><code>LenovoServiceBridge</code></td>
+            <td>5.0.2.21</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>Microsoft Visual Studio Code (User)</td>
+            <td><code>MicrosoftVisualStudioCode</code></td>
+            <td>1.120.0</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>Ubuntu 24.04.1 LTS</td>
+            <td><code>CanonicalUbuntu2404</code></td>
+            <td>2404.1.31.0</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>Affinity</td>
+            <td><code>CanvaAffinity</code></td>
+            <td>3.2.1.4425</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>Instalador de aplicaci├│n</td>
+            <td><code>MicrosoftAppInstaller</code></td>
+            <td>1.28.240.0</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>Microsoft.UI.Xaml.2.7</td>
+            <td><code>MicrosoftUIXaml27</code></td>
+            <td>7.2409.9001.0</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>Microsoft.UI.Xaml.2.7</td>
+            <td><code>MicrosoftUIXaml27</code></td>
+            <td>7.2409.9001.0</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>Microsoft.UI.Xaml.2.8</td>
+            <td><code>MicrosoftUIXaml28</code></td>
+            <td>8.2511.26001.0</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>Microsoft.UI.Xaml.2.8</td>
+            <td><code>MicrosoftUIXaml28</code></td>
+            <td>8.2501.31001.0</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>WindowsAppRuntime.1.2</td>
+            <td><code>MicrosoftWindowsAppRuntime12</code></td>
+            <td>> 1.2.2</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>WindowsAppRuntime.1.2</td>
+            <td><code>MicrosoftWindowsAppRuntime12</code></td>
+            <td>> 1.2.2</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>WindowsAppRuntime.1.4</td>
+            <td><code>MicrosoftWindowsAppRuntime14</code></td>
+            <td>> 1.4.5</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>WindowsAppRuntime.1.4</td>
+            <td><code>MicrosoftWindowsAppRuntime14</code></td>
+            <td>> 1.4.5</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>WindowsAppRuntime.1.5</td>
+            <td><code>MicrosoftWindowsAppRuntime15</code></td>
+            <td>> 1.5.8</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>WindowsAppRuntime.1.5</td>
+            <td><code>MicrosoftWindowsAppRuntime15</code></td>
+            <td>> 1.5.8</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>WindowsAppRuntime.1.6</td>
+            <td><code>MicrosoftWindowsAppRuntime16</code></td>
+            <td>1.6.9</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>WindowsAppRuntime.1.6</td>
+            <td><code>MicrosoftWindowsAppRuntime16</code></td>
+            <td>1.6.9</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>WindowsAppRuntime.1.7</td>
+            <td><code>MicrosoftWindowsAppRuntime17</code></td>
+            <td>1.7.9</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>WindowsAppRuntime.1.7</td>
+            <td><code>MicrosoftWindowsAppRuntime17</code></td>
+            <td>1.7.9</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>WindowsAppRuntime.1.7</td>
+            <td><code>MicrosoftWindowsAppRuntime17</code></td>
+            <td>1.7.8</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>WindowsAppRuntime.1.8</td>
+            <td><code>MicrosoftWindowsAppRuntime18</code></td>
+            <td>8000.859.21.0</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>WindowsAppRuntime.1.8</td>
+            <td><code>MicrosoftWindowsAppRuntime18</code></td>
+            <td>8000.859.21.0</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>WindowsAppRuntime.1.8</td>
+            <td><code>MicrosoftWindowsAppRuntime18</code></td>
+            <td>8000.836.2153.0</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>WindowsAppRuntime.1.8</td>
+            <td><code>MicrosoftWindowsAppRuntime18</code></td>
+            <td>8000.806.2252.0</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>WindowsAppRuntime.1.8</td>
+            <td><code>MicrosoftWindowsAppRuntime18</code></td>
+            <td>8000.770.947.0</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>WindowsAppRuntime.1.8</td>
+            <td><code>MicrosoftWindowsAppRuntime18</code></td>
+            <td>8000.731.1532.0</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>Terminal Windows</td>
+            <td><code>MicrosoftWindowsTerminal</code></td>
+            <td>1.24.11321.0</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+        <tr>
+            <td>Subsistema de Windows para Linux</td>
+            <td><code>MicrosoftWSL</code></td>
+            <td>2.7.3.0</td>
+            <td>winget</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>
+</tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div class="footer">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Marca-uc.svg/330px-Marca-uc.svg.png" style="width:140px; margin-bottom:10px;">
+  <p><strong>&copy; 2026 Unidad de Informatica</strong><br>Facultad de Comunicaciones | Pontificia Universidad Catolica de Chile</p>
+</div>
+<script>
+  const ctx = document.getElementById('donut').getContext('2d');
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Actualizadas', 'Fallidas'],
+      datasets: [{ data: [59, 0], backgroundColor: ['#1db954', '#e63946'], borderWidth: 3 }]
+    },
+    options: { cutout: '70%', plugins: { legend: { position: 'bottom' } } }
+  });
+</script>
+</body>
+</html>

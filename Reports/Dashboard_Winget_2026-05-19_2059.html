@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard Winget Â· PC-CASA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root { --navy: #03122E; --gold: #C8A84B; --green: #1db954; --red: #e63946; --bg: #eef1f6; --surface: #ffffff; --border: #e2e8f0; --text: #1e293b; --muted: #64748b; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; margin:0; padding:0; }
+    .header { background: var(--navy); color: white; padding: 36px 48px; }
+    .header-title { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
+    .header-sub { font-size: 13px; opacity: .6; margin-bottom: 20px; }
+    .meta-row { display: flex; gap: 8px; margin-bottom: 18px; }
+    .meta-chip { background: rgba(255,255,255,.1); border-radius: 6px; padding: 4px 12px; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+    .status-pill { display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; background: #1db954; }
+    .main { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+    .kpi-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 28px; }
+    .kpi-card { background: var(--surface); border-radius: 12px; padding: 20px; border-top: 3px solid var(--border); box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+    .kpi-value { font-size: 36px; font-weight: 700; color: var(--navy); }
+    .kpi-label { font-size: 11px; text-transform: uppercase; color: var(--muted); }
+    .body-grid { display: grid; grid-template-columns: 260px 1fr; gap: 20px; }
+    .card { background: var(--surface); border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,.06); overflow: hidden; }
+    .card-header { background: var(--navy); color: white; padding: 13px 18px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .card-body { padding: 20px; }
+    .chart-wrap { position: relative; }
+    .chart-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -55%); text-align: center; }
+    .chart-pct { font-size: 28px; font-weight: 700; color: var(--navy); }
+    table { width: 100%; border-collapse: collapse; }
+    thead th { background: #f8fafc; color: var(--muted); font-size: 11px; font-weight: 600; text-transform: uppercase; padding: 10px 14px; border-bottom: 2px solid var(--border); text-align: left; }
+    tbody td { padding: 10px 14px; border-bottom: 1px solid #f1f5f9; }
+    code { font-family: 'JetBrains Mono', monospace; font-size: 11px; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; }
+    .badge-success { background: #d1fae5; color: #065f46; } .badge-danger { background: #fee2e2; color: #991b1b; }
+    .empty-row { text-align: center; padding: 32px !important; color: var(--muted); font-style: italic; }
+    .footer { text-align: center; padding: 36px; color: var(--muted); font-size: 12px; border-top: 1px solid var(--border); margin-top: 40px; }
+  </style>
+</head>
+<body>
+<div class="header">
+  <div class="header-title">Dashboard de Actualizaciones Winget</div>
+  <div class="header-sub">Unidad de InformÃ¡tica. Facultad de Comunicaciones. UC</div>
+  <div class="meta-row">
+    <span class="meta-chip">Equipo: PC-CASA</span>
+    <span class="meta-chip">Fecha: 19-05-2026 20:59</span>
+    <span class="meta-chip">DuraciÃ³n: 0.1 min</span>
+  </div>
+  <span class="status-pill">Proceso: EXITOSO</span>
+</div>
+<div class="main">
+  <div class="kpi-grid">
+    <div class="kpi-card"><div class="kpi-value">0</div><div class="kpi-label">Total apps</div></div>
+    <div class="kpi-card"><div class="kpi-value">0</div><div class="kpi-label">Actualizadas</div></div>
+    <div class="kpi-card"><div class="kpi-value">0</div><div class="kpi-label">Fallidas</div></div>
+    <div class="kpi-card"><div class="kpi-value">0</div><div class="kpi-label">Omitidas</div></div>
+    <div class="kpi-card"><div class="kpi-value">0.1 m</div><div class="kpi-label">DuraciÃ³n</div></div>
+  </div>
+  <div class="body-grid">
+    <div class="card">
+      <div class="card-header">DistribuciÃ³n</div>
+      <div class="card-body">
+        <div class="chart-wrap">
+          <canvas id="donut" height="220"></canvas>
+          <div class="chart-center"><div class="chart-pct">100%</div><div>Ã©xito</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">Detalle por aplicaciÃ³n</div>
+      <table>
+        <thead><tr><th>AplicaciÃ³n</th><th>ID</th><th>VersiÃ³n anterior</th><th>VersiÃ³n nueva</th><th>Estado</th></tr></thead>
+        <tbody>        <tr><td colspan='5' class='empty-row'>Sin actualizaciones disponibles en este ciclo (Sistema al dÃ­a)</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div class="footer">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Marca-uc.svg/330px-Marca-uc.svg.png" style="width:140px; margin-bottom:10px;">
+  <p><strong>&copy; 2026 Unidad de InformÃ¡tica</strong><br>Facultad de Comunicaciones | Pontificia Universidad CatÃ³lica de Chile</p>
+</div>
+<script>
+  const ctx = document.getElementById('donut').getContext('2d');
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Actualizadas', 'Fallidas'],
+      datasets: [{ data: [0, 0], backgroundColor: ['#1db954', '#e63946'], borderWidth: 3 }]
+    },
+    options: { cutout: '70%', plugins: { legend: { position: 'bottom' } } }
+  });
+</script>
+</body>
+</html>

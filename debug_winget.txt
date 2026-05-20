@@ -1,0 +1,58 @@
+Administrador de paquetes de Windows v1.28.240
+Copyright (c) Microsoft Corporation. Todos los derechos reservados.
+
+No se reconoció el nombre del argumento para el comando actual: '--progress-style'
+
+Actualiza el paquete seleccionado, ya sea buscando en la lista de paquetes instalados o directamente desde un manifiesto. De forma predeterminada, la consulta debe coincidir sin distinción entre mayúsculas y minúsculas con el identificador, el nombre o el moniker del paquete. Se pueden usar otros campos pasando su opción adecuada. Cuando no se proporciona ningún argumento, muestra los paquetes con actualizaciones disponibles
+
+uso: winget upgrade [[-q] <query>...] [<opciones>]
+
+Están disponibles los siguientes alias de comando:
+  update
+
+Los siguientes argumentos están disponibles:
+  -q,--query                           La consulta usada para buscar un paquete
+
+Están disponibles las siguientes opciones:
+  -m,--manifest                        La ruta de acceso al manifiesto del paquete
+  --id                                 Filtrar resultados por id
+  --name                               Filtrar resultados por nombre
+  --moniker                            Filtrar resultados por moniker
+  -v,--version                         Usar la versión especificada. El valor predeterminado es la última versión
+  -s,--source                          Buscar paquete usando el origen especificado
+  -e,--exact                           Buscar paquete usando la coincidencia exacta
+  -i,--interactive                     Solicitar instalación interactiva; es posible que se necesite la participación del usuario
+  -h,--silent                          Solicitar instalación silenciosa
+  --purge                              Elimina todos los archivos y directorios del directorio del paquete (portable)
+  -o,--log                             Ubicación del registro (si es posible)
+  --custom                             Argumentos que se van a pasar al instalador además de los valores predeterminados
+  --override                           Sobreescribir argumentos pasados al instalador
+  -l,--location                        Ubicación en la que instalar (si es posible)
+  --scope                              Seleccionar filtro de ámbito de paquete instalado (user o machine)
+  -a,--architecture                    Selección de la arquitectura
+  --installer-type                     Seleccionar el tipo de instalador
+  --locale                             Configuración regional para usar (formato BCP47)
+  --ignore-security-hash               Omitir el error de comprobación de hash del instalador
+  --allow-reboot                       Permite un reinicio si procede
+  --skip-dependencies                  Omite el procesamiento de las dependencias del paquete y las características de Windows
+  --ignore-local-archive-malware-scan  Omitir el examen de malware realizado como parte de la instalación de un paquete de tipo de archivo desde el manifiesto local
+  --accept-package-agreements          Aceptar todos los contratos de licencia para paquetes
+  --accept-source-agreements           Aceptar todos los contratos de origen durante las operaciones de origen
+  --header                             Encabezado HTTP de origen REST opcional de Windows-Package-Manager
+  --authentication-mode                Especificar la preferencia de ventana de autenticación (silent, silentPreferred, or interactive)
+  --authentication-account             Especifique la cuenta que se usará para la autenticación
+  -r,--recurse,--all                   Actualizar todos los paquetes instalados a la versión más reciente si está disponible
+  -u,--unknown,--include-unknown       Actualizar paquetes aunque no se pueda determinar su versión actual
+  --pinned,--include-pinned            Actualizar paquetes aunque tengan un PIN que no sea de bloqueo
+  --uninstall-previous                 Desinstalar la versión anterior del paquete durante la actualización
+  --force                              Ejecutar directamente el comando y continuar con problemas no relacionados con la seguridad
+  -?,--help                            Muestra la ayuda sobre el comando seleccionado
+  --wait                               Pide al usuario que presione cualquier tecla antes de salir
+  --logs,--open-logs                   Abrir la ubicación de registros predeterminada
+  --verbose,--verbose-logs             Permite el registro detallado para winget
+  --nowarn,--ignore-warnings           Suprime las salidas de advertencia
+  --disable-interactivity              Deshabilitar mensajes interactivos
+  --proxy                              Establecer un proxy para usar para esta ejecución
+  --no-proxy                           Deshabilitar el uso del proxy para esta ejecución
+
+Puedes encontrar más ayuda en:'https://aka.ms/winget-command-upgrade'

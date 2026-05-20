@@ -1,0 +1,364 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard Winget Â· PC-CASA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --navy:    #03122E;
+      --gold:    #C8A84B;
+      --green:   #1db954;
+      --red:     #e63946;
+      --amber:   #f4a261;
+      --slate:   #64748b;
+      --bg:      #eef1f6;
+      --surface: #ffffff;
+      --border:  #e2e8f0;
+      --text:    #1e293b;
+      --muted:   #64748b;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* â”€â”€ HEADER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .header {
+      background: var(--navy);
+      color: white;
+      padding: 36px 48px 32px;
+      position: relative;
+      overflow: hidden;
+    }
+    .header::before {
+      content: '';
+      position: absolute;
+      right: -80px; top: -80px;
+      width: 340px; height: 340px;
+      border-radius: 50%;
+      background: rgba(200,168,75,.1);
+      pointer-events: none;
+    }
+    .header::after {
+      content: '';
+      position: absolute;
+      right: 60px; top: 60px;
+      width: 180px; height: 180px;
+      border-radius: 50%;
+      background: rgba(200,168,75,.06);
+      pointer-events: none;
+    }
+    .header-inner { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; }
+    .header-eyebrow {
+      font-size: 11px; font-weight: 500; letter-spacing: 2px;
+      text-transform: uppercase; opacity: .55; margin-bottom: 8px;
+    }
+    .header-title {
+      font-size: 26px; font-weight: 700;
+      letter-spacing: -.5px; margin-bottom: 6px;
+    }
+    .header-sub { font-size: 13px; opacity: .6; margin-bottom: 20px; }
+
+    .meta-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+    .meta-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.15);
+      border-radius: 6px; padding: 4px 12px;
+      font-size: 12px; font-family: 'JetBrains Mono', monospace;
+    }
+
+    .status-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 16px; border-radius: 20px;
+      font-size: 12px; font-weight: 600; letter-spacing: .5px;
+      background: #e63946;
+    }
+    .status-pill::before {
+      content: ''; width: 7px; height: 7px;
+      border-radius: 50%; background: rgba(255,255,255,.7);
+      display: inline-block;
+    }
+
+    /* â”€â”€ LAYOUT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .main { max-width: 1100px; margin: 0 auto; padding: 32px 24px 48px; }
+
+    /* â”€â”€ KPI GRID â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    @media (max-width: 800px) { .kpi-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 520px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    .kpi-card {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 20px 18px 16px;
+      border-top: 3px solid var(--border);
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+      transition: transform .15s, box-shadow .15s;
+    }
+    .kpi-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,.1); }
+    .kpi-card.c-navy   { border-color: var(--navy); }
+    .kpi-card.c-green  { border-color: var(--green); }
+    .kpi-card.c-red    { border-color: var(--red); }
+    .kpi-card.c-amber  { border-color: var(--amber); }
+    .kpi-card.c-gold   { border-color: var(--gold); }
+
+    .kpi-value {
+      font-size: 36px; font-weight: 700; line-height: 1;
+      letter-spacing: -1px; margin-bottom: 4px;
+    }
+    .kpi-card.c-navy  .kpi-value { color: var(--navy);  }
+    .kpi-card.c-green .kpi-value { color: var(--green); }
+    .kpi-card.c-red   .kpi-value { color: var(--red);   }
+    .kpi-card.c-amber .kpi-value { color: var(--amber); }
+    .kpi-card.c-gold  .kpi-value { color: var(--gold);  }
+
+    .kpi-label {
+      font-size: 11px; font-weight: 500; text-transform: uppercase;
+      letter-spacing: 1px; color: var(--muted);
+    }
+
+    /* â”€â”€ BODY GRID â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .body-grid {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 750px) { .body-grid { grid-template-columns: 1fr; } }
+
+    /* â”€â”€ CARD â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .card {
+      background: var(--surface);
+      border-radius: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+      overflow: hidden;
+    }
+    .card-header {
+      background: var(--navy);
+      color: white;
+      padding: 13px 18px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+    }
+    .card-body { padding: 20px; }
+
+    /* â”€â”€ CHART â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .chart-wrap { position: relative; }
+    .chart-center {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -55%);
+      text-align: center; pointer-events: none;
+    }
+    .chart-pct { font-size: 28px; font-weight: 700; color: var(--navy); line-height: 1; }
+    .chart-lbl { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+
+    /* â”€â”€ TABLE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      background: #f8fafc;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      padding: 10px 14px;
+      border-bottom: 2px solid var(--border);
+      white-space: nowrap;
+    }
+    tbody td { padding: 10px 14px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: #fafbfd; }
+
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; color: var(--muted);
+      background: #f1f5f9; padding: 2px 6px; border-radius: 4px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px; border-radius: 6px;
+      font-size: 11px; font-weight: 600; letter-spacing: .3px;
+    }
+    .badge-success   { background: #d1fae5; color: #065f46; }
+    .badge-danger    { background: #fee2e2; color: #991b1b; }
+    .badge-warning   { background: #fef9c3; color: #713f12; }
+    .badge-secondary { background: #e2e8f0; color: #475569; }
+    .badge-info      { background: #dbeafe; color: #1e40af; }
+
+    .empty-row { text-align: center; padding: 32px !important; color: var(--muted); font-style: italic; }
+
+    /* â”€â”€ FOOTER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .footer {
+      text-align: center; padding: 36px 20px 40px;
+      color: var(--muted); font-size: 12px;
+      border-top: 1px solid var(--border);
+      margin-top: 40px;
+    }
+    .footer img  { width: 140px; margin-bottom: 12px; display: block; margin: 0 auto 14px; opacity: .9; }
+    .footer strong { color: var(--navy); }
+    .footer .exitcode {
+      display: inline-block; margin-top: 10px;
+      font-family: 'JetBrains Mono', monospace; font-size: 11px;
+      background: #f1f5f9; padding: 4px 12px; border-radius: 6px; color: var(--slate);
+    }
+  </style>
+</head>
+<body>
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• HEADER â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<div class="header">
+  <div class="header-inner">
+    <div class="header-eyebrow">Automatizacion de Software | Windows 11 Pro</div>
+    <div class="header-title">Dashboard de Actualizaciones Winget</div>
+    <div class="header-sub">
+      Unidad de Informatica. Facultad de Comunicaciones.
+      Pontificia Universidad Catolica de Chile
+    </div>
+    <div class="meta-row">
+      <span class="meta-chip">Equipo: PC-CASA</span>
+      <span class="meta-chip">Fecha: 17-05-2026 14:16</span>
+      <span class="meta-chip">Duracion:0 min</span>
+    </div>
+    <span class="status-pill">Proceso: CON ERRORES</span>
+  </div>
+</div>
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• MAIN â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<div class="main">
+
+  <!-- KPIs -->
+  <div class="kpi-grid">
+    <div class="kpi-card c-navy">
+      <div class="kpi-value">0</div>
+      <div class="kpi-label">Total apps</div>
+    </div>
+    <div class="kpi-card c-green">
+      <div class="kpi-value">0</div>
+      <div class="kpi-label">Actualizadas</div>
+    </div>
+    <div class="kpi-card c-red">
+      <div class="kpi-value">0</div>
+      <div class="kpi-label">Fallidas</div>
+    </div>
+    <div class="kpi-card c-amber">
+      <div class="kpi-value">0</div>
+      <div class="kpi-label">Omitidas</div>
+    </div>
+    <div class="kpi-card c-gold">
+      <div class="kpi-value">0m</div>
+      <div class="kpi-label">Duracion</div>
+    </div>
+  </div>
+
+  <!-- BODY: Chart + Tabla -->
+  <div class="body-grid">
+
+    <!-- Donut chart -->
+    <div class="card">
+      <div class="card-header">Distribucion</div>
+      <div class="card-body">
+        <div class="chart-wrap">
+          <canvas id="donut" height="220"></canvas>
+          <div class="chart-center">
+            <div class="chart-pct">0%</div>
+            <div class="chart-lbl">exito</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabla de apps -->
+    <div class="card">
+      <div class="card-header">Detalle por aplicacion</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Aplicacion</th>
+              <th>ID</th>
+              <th>Version anterior</th>
+              <th>Version nueva</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+        <tr><td colspan='5' class='empty-row'>Sin actualizaciones disponibles en este ciclo</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /body-grid -->
+</div><!-- /main -->
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• FOOTER â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<div class="footer">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Marca-uc.svg/330px-Marca-uc.svg.png" alt="Logo Pontificia Universidad CatÃ³lica de Chile">
+  <p>
+    <strong>&copy; 2026 Unidad de Informatica</strong><br>
+    Facultad de Comunicaciones | Pontificia Universidad Catolica de Chile
+  </p>
+  <!-- <div class="exitcode">winget exit code:  &nbsp;Â·&nbsp; Log: C:\Scripts\Reports\Logs\Log_2026-05-17_1416.txt</div> -->
+</div>
+
+<script>
+  const ctx   = document.getElementById('donut').getContext('2d');
+  const total = 0;
+
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels:   ['Actualizadas', 'Fallidas', 'Omitidas'],
+      datasets: [{
+        data:            [0, 0, 0],
+        backgroundColor: ['#1db954', '#e63946', '#f4a261'],
+        borderWidth:     3,
+        borderColor:     '#ffffff',
+        hoverOffset:     6
+      }]
+    },
+    options: {
+      cutout: '70%',
+      animation: { animateScale: true, duration: 900 },
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            font: { size: 11, family: 'Inter' },
+            padding: 14,
+            usePointStyle: true,
+            pointStyleWidth: 10
+          }
+        },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const pct = total > 0 ? Math.round(ctx.parsed / total * 100) : 0;
+              return  + ctx.label + :  + ctx.parsed +  ( + pct + %);
+            }
+          }
+        }
+      }
+    }
+  });
+</script>
+
+</body>
+</html>

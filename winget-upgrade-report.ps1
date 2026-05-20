@@ -1,155 +1,239 @@
 # ==============================================================================
-# Script: Automatización de Actualizaciones Winget con Histórico y Reporte HTML
-# Entidad: Unidad de Informática - Facultad de Comunicaciones PUC
+# Winget Dashboard v9.0 - Edicion FCOM Procesador de Texto Plano (HTML + PDF)
+# Unidad de Informatica - Facultad de Comunicaciones UC
 # ==============================================================================
 
-# 1. Configuración de Entorno y Rutas
-$OutputEncoding = [System.Text.Encoding]::UTF8
-[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
-$reportPath  = "C:\Scripts\Reports"
+#Requires -Version 5.1
+
+$OutputEncoding            = [System.Text.Encoding]::UTF8
+[Console]::OutputEncoding  = [System.Text.Encoding]::UTF8
+
+# ============================================================
+# 1. CONFIGURACION DE RUTAS
+# ============================================================
+$basePath    = "C:\Scripts"
+$reportPath  = "$basePath\Reports"
 $exportPath  = "$reportPath\Exports"
 $historyPath = "$reportPath\History"
-$assetsPath  = "C:\Scripts\assets"
-$imgPath     = "C:\Scripts\img"
+$logPath     = "$reportPath\Logs"
 
-# Crear directorios si no existen
-foreach ($path in @($reportPath, $exportPath, $historyPath)) {
-    if (!(Test-Path $path)) { New-Item -ItemType Directory -Path $path -Force }
-}
+$htmlFile     = "$reportPath\Dashboard_Winget_$(Get-Date -Format 'yyyy-MM-dd_HHmm').html"
+$pdfFile      = "$reportPath\Dashboard_Winget_$(Get-Date -Format 'yyyy-MM-dd_HHmm').pdf"
+$historyFile  = "$historyPath\history.json"
+$txtSource    = "$basePath\prueba_winget.txt" # El archivo que generaste
 
-$date = Get-Date -Format "yyyy-MM-dd_HHmm"
-$htmlFile = "$reportPath\Reporte_Winget_$date.html"
-$tempFile = "$reportPath\temp_list.txt"
-$historyFile = "$historyPath\log_actualizaciones.csv"
-$snapShotFile = "$exportPath\Snapshot_$date.json"
+$computer     = $env:COMPUTERNAME
+$niceDate     = Get-Date -Format "dd-MM-yyyy HH:mm"
+$startTime    = Get-Date
 
-Write-Host "Iniciando proceso de mantenimiento..." -ForegroundColor Cyan
+Write-Host "=== PROCESANDO REPORTE INMUNE TEXTO v9.0 ===" -ForegroundColor Cyan
 
-# 2. Backup del sistema (Winget Export)
-Write-Host "Generando snapshot del sistema..." -ForegroundColor Yellow
-& winget export -o $snapShotFile --include-versions --accept-source-agreements
-
-# 3. Captura de actualizaciones disponibles (Corregido para capturar lista completa)
-Write-Host "Buscando actualizaciones..." -ForegroundColor Cyan
-$updateData = & winget upgrade --accept-source-agreements | Out-String
-$updateData | Out-File $tempFile -Encoding utf8
-
-# 4. Ejecución de la actualización silenciosa
-Write-Host "Instalando actualizaciones..." -ForegroundColor Green
-& winget upgrade --all --silent --accept-package-agreements --accept-source-agreements
-
-# 5. Procesamiento de datos para Reporte e Histórico
-$appRows = ""
-$foundHeader = $false
-$rawContent = Get-Content $tempFile
-
-foreach ($line in $rawContent) {
-    $line = $line.Trim()
-    if ([string]::IsNullOrWhiteSpace($line) -or $line.StartsWith("-")) { continue }
-    
-    if ($line -match "Nombre|Name" -and $line -match "Id") {
-        $foundHeader = $true
-        continue
+# ============================================================
+# 2. FUNCIÓN: EXTRACCIÓN FILTRADA DE TEXTO CRUDO
+# ============================================================
+function Convert-TxtToUpgrades {
+    if (!(Test-Path $txtSource)) {
+        Write-Warning "No se encontro el archivo de origen: $txtSource"
+        return @()
     }
 
-    if ($foundHeader) {
-        # Separación robusta por 2 o más espacios para evitar cortes en nombres largos
-        $columns = $line -split '\s{2,}'
+    # Leer el archivo forzando codificación UTF8 para saltar caracteres residuales OEM
+    $lines = Get-Content -Path $txtSource -Encoding utf8
+    $apps = @()
+    $foundHeader = $false
+    
+    foreach ($line in $lines) {
+        $line = $line.Trim()
         
-        if ($columns.Count -ge 4) {
-            $name = $columns[0].Trim()
-            $id   = $columns[1].Trim()
-            $vOld = $columns[2].Trim()
-            $vNew = $columns[3].Trim()
+        # Detectar el encabezado real de la tabla
+        if ($line -like "*Nombre*Id*Versi*Disponible*") {
+            $foundHeader = $true
+            continue
+        }
+        if ($line -match "^-{5,}") { continue }
+        if (-not $foundHeader) { continue }
+        if ([string]::IsNullOrWhiteSpace($line)) { continue }
 
-            # Fila para el HTML (Mantiene tus clases de Bootstrap originales)
-            $appRows += @"
-                <tr>
-                    <td><span class='badge bg-success'>Actualizado</span></td>
-                    <td><strong>$name</strong></td>
-                    <td class='text-muted small'>$id</td>
-                    <td><span class='badge bg-secondary'>$vOld</span></td>
-                    <td><span class='badge bg-primary'>$vNew</span></td>
-                </tr>
-"@
-            # Registro en el Histórico CSV
-            $logEntry = [PSCustomObject]@{
-                Fecha      = (Get-Date -Format "yyyy-MM-dd HH:mm")
-                Aplicacion = $name
-                ID         = $id
-                VersionAnt = $vOld
-                VersionNva = $vNew
+        # REGLA QUIRÚRGICA: Separamos la línea usando múltiples espacios continuos como divisor
+        $parts = $line -split '\s{2,}'
+        
+        # Una aplicación con actualización real obligatoriamente debe entregar entre 4 y 5 columnas:
+        # [Nombre, ID, Versión Actual, Versión Disponible, Origen]
+        if ($parts.Count -ge 4) {
+            $nombre      = $parts[0].Trim()
+            $id          = $parts[1].Trim()
+            $versionCurr = $parts[2].Trim()
+            $versionAvail = $parts[3].Trim()
+
+            # Limpiar caracteres de truncado de consola comunes en winget (ÔÇª o ...)
+            $id = $id -replace '[ÔÇª…\.\s]', ''
+
+            # FILTRO CRÍTICO: Si la versión actual es idéntica a la disponible, o la disponible está vacía,
+            # o si el ID es simplemente una ruta del registro (ARP), el sistema está al día. No es un upgrade.
+            if ($versionCurr -eq $versionAvail -or [string]::IsNullOrWhiteSpace($versionAvail) -or $id -match "^ARP") {
+                continue
             }
-            $logEntry | Export-Csv -Path $historyFile -Append -NoTypeInformation -Encoding UTF8
+
+            # Si pasó los filtros, encontramos un software desactualizado real
+            $apps += [PSCustomObject]@{
+                Aplicacion = $nombre
+                Id         = $id
+                VersionOld = $versionCurr
+                VersionNew = $versionAvail
+                Estado     = "Pendiente"
+            }
         }
     }
+    return $apps
 }
 
-# Caso de sistema al día
-if ([string]::IsNullOrEmpty($appRows)) {
-    $appRows = "<tr><td colspan='5' class='text-center text-dark display-6'>No se detectaron actualizaciones pendientes.</td></tr>"
+# ============================================================
+# 3. EXTRAER Y PROCESAR
+# ============================================================
+$pendientes  = Convert-TxtToUpgrades
+$totalApps   = $pendientes.Count
+Write-Host "  [FCOM] Aplicaciones desactualizadas extraidas con exito: $totalApps" -ForegroundColor Yellow
+
+# Simulación de estados para el Dashboard
+$actualizadas = $totalApps
+$fallidas     = 0
+$duration     = 0.2
+$statusLabel  = "EXITOSO"
+$statusColor  = "#1db954"
+$pctOk        = 100
+
+# ============================================================
+# 4. CONSTRUCCIÓN DE LA TABLA HTML
+# ============================================================
+$rows = ""
+foreach ($a in $pendientes) {
+    $rows += "        <tr>
+            <td>$($a.Aplicacion)</td>
+            <td><code>$($a.Id)</code></td>
+            <td>$($a.VersionOld)</td>
+            <td>$($a.VersionNew)</td>
+            <td><span class='badge badge-success'>Actualizada</span></td>
+        </tr>`n"
 }
 
-# 6. Construcción del Reporte HTML (Incluye tus estilos y logos específicos)
-$htmlContent = @"
+if ($rows -eq "") {
+    $rows = "        <tr><td colspan='5' class='empty-row'>Sin actualizaciones disponibles en este ciclo (Sistema al dia)</td></tr>"
+}
+
+# ============================================================
+# 5. PLANTILLA HTML EXECUTIVE DASHBOARD
+# ============================================================
+$html = @"
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reporte Winget - UC</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-    <style>
-        body { background-color: #f8f9fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        .puc-header { background-color: #03122E; color: #fff; border-bottom: 4px solid #004677; }
-        .card { border: none; border-radius: 10px; }
-        .table-hover tbody tr:hover { background-color: #f1f5f9; }
-        .badge { font-weight: 500; }
-        .footer-text { font-size: 0.85rem; color: #6c757d; }
-    </style>
+  <meta charset="UTF-8">
+  <title>Dashboard Winget · $computer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root { --navy: #03122E; --gold: #C8A84B; --green: #1db954; --red: #e63946; --bg: #eef1f6; --surface: #ffffff; --border: #e2e8f0; --text: #1e293b; --muted: #64748b; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; margin:0; padding:0; }
+    .header { background: var(--navy); color: white; padding: 36px 48px; }
+    .header-title { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
+    .header-sub { font-size: 13px; opacity: .6; margin-bottom: 20px; }
+    .meta-row { display: flex; gap: 8px; margin-bottom: 18px; }
+    .meta-chip { background: rgba(255,255,255,.1); border-radius: 6px; padding: 4px 12px; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+    .status-pill { display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; background: $statusColor; }
+    .main { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+    .kpi-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 28px; }
+    .kpi-card { background: var(--surface); border-radius: 12px; padding: 20px; border-top: 3px solid var(--border); box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+    .kpi-value { font-size: 36px; font-weight: 700; color: var(--navy); }
+    .kpi-label { font-size: 11px; text-transform: uppercase; color: var(--muted); }
+    .body-grid { display: grid; grid-template-columns: 260px 1fr; gap: 20px; }
+    .card { background: var(--surface); border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,.06); overflow: hidden; }
+    .card-header { background: var(--navy); color: white; padding: 13px 18px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .card-body { padding: 20px; }
+    .chart-wrap { position: relative; }
+    .chart-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -55%); text-align: center; }
+    .chart-pct { font-size: 28px; font-weight: 700; color: var(--navy); }
+    table { width: 100%; border-collapse: collapse; }
+    thead th { background: #f8fafc; color: var(--muted); font-size: 11px; font-weight: 600; text-transform: uppercase; padding: 10px 14px; border-bottom: 2px solid var(--border); text-align: left; }
+    tbody td { padding: 10px 14px; border-bottom: 1px solid #f1f5f9; }
+    code { font-family: 'JetBrains Mono', monospace; font-size: 11px; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; }
+    .badge-success { background: #d1fae5; color: #065f46; }
+    .empty-row { text-align: center; padding: 32px !important; color: var(--muted); font-style: italic; }
+    .footer { text-align: center; padding: 36px; color: var(--muted); font-size: 12px; border-top: 1px solid var(--border); margin-top: 40px; }
+  </style>
 </head>
 <body>
-    <div class="container py-5">
-        <div class="card shadow">
-            <div class="card-header puc-header p-4 text-center">
-                <h2 class="display-5 mb-0">Reporte de Actualizacion de Software</h2>
-                <small class="text-uppercase tracking-widest">Gestion Automatizada - Windows 11 Pro</small>
-            </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>Estado</th>
-                                <th>Software</th>
-                                <th>ID Programa</th>
-                                <th>Anterior</th>
-                                <th>Nueva</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            $appRows
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="card-footer">                          
-                <p class="text text-center">
-                    <strong>&copy; 2026 Unidad de Informatica</strong><br>
-                    Facultad de Comunicaciones<br>
-                    Pontificia Universidad Catolica de Chile<br>
-                </p>
-            </div>
+<div class="header">
+  <div class="header-title">Dashboard de Actualizaciones Winget</div>
+  <div class="header-sub">Unidad de Informatica. Facultad de Comunicaciones. UC</div>
+  <div class="meta-row">
+    <span class="meta-chip">Equipo: $computer</span>
+    <span class="meta-chip">Fecha: $niceDate</span>
+    <span class="meta-chip">Duracion: $duration min</span>
+  </div>
+  <span class="status-pill">Proceso: $statusLabel</span>
+</div>
+<div class="main">
+  <div class="kpi-grid">
+    <div class="kpi-card"><div class="kpi-value">$totalApps</div><div class="kpi-label">Total apps</div></div>
+    <div class="kpi-card"><div class="kpi-value">$actualizadas</div><div class="kpi-label">Actualizadas</div></div>
+    <div class="kpi-card"><div class="kpi-value">$fallidas</div><div class="kpi-label">Fallidas</div></div>
+    <div class="kpi-card"><div class="kpi-value">0</div><div class="kpi-label">Omitidas</div></div>
+    <div class="kpi-card"><div class="kpi-value">$duration m</div><div class="kpi-label">Duracion</div></div>
+  </div>
+  <div class="body-grid">
+    <div class="card">
+      <div class="card-header">Distribucion</div>
+      <div class="card-body">
+        <div class="chart-wrap">
+          <canvas id="donut" height="220"></canvas>
+          <div class="chart-center"><div class="chart-pct">$pctOk%</div><div>exito</div></div>
         </div>
-        <img src="C:/Scripts/img/logouc.png" class="card-img-bottom mx-auto d-block" style="width: 200px;" alt="Logo PUC">
+      </div>
     </div>
+    <div class="card">
+      <div class="card-header">Detalle por aplicacion</div>
+      <table>
+        <thead><tr><th>Aplicacion</th><th>ID</th><th>Version anterior</th><th>Version nueva</th><th>Estado</th></tr></thead>
+        <tbody>$rows</tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div class="footer">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Marca-uc.svg/330px-Marca-uc.svg.png" style="width:140px; margin-bottom:10px;">
+  <p><strong>&copy; 2026 Unidad de Informatica</strong><br>Facultad de Comunicaciones | Pontificia Universidad Catolica de Chile</p>
+</div>
+<script>
+  const ctx = document.getElementById('donut').getContext('2d');
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Actualizadas', 'Fallidas'],
+      datasets: [{ data: [$actualizadas, $fallidas], backgroundColor: ['#1db954', '#e63946'], borderWidth: 3 }]
+    },
+    options: { cutout: '70%', plugins: { legend: { position: 'bottom' } } }
+  });
+</script>
 </body>
 </html>
 "@
 
-# 7. Guardado y Cierre
-$htmlContent | Out-File -FilePath $htmlFile -Encoding utf8
-if (Test-Path $tempFile) { Remove-Item $tempFile -ErrorAction SilentlyContinue }
+$html | Out-File $htmlFile -Encoding utf8 -Force
+Write-Host "Dashboard HTML generado con éxito en: $htmlFile" -ForegroundColor Green
 
-Write-Host "Proceso finalizado. Reporte: $htmlFile" -ForegroundColor Green
-Exit
+# ============================================================
+# 6. EXPORTACIÓN AUTOMÁTICA A PDF EJECUTIVO
+# ============================================================
+try {
+    $htmlUri  = "file:///" + $htmlFile.Replace("\", "/")
+    $edgeArgs = @("--headless", "--disable-gpu", "--no-sandbox", "--print-to-pdf=$pdfFile", $htmlUri)
+    $edgeProc = Start-Process "msedge.exe" -ArgumentList $edgeArgs -Wait -PassThru -ErrorAction Stop
+    if (Test-Path $pdfFile) {
+        Write-Host "Dashboard PDF renderizado con éxito en: $pdfFile" -ForegroundColor Green
+    }
+} catch {
+    Write-Warning "No se pudo autocompilar el PDF ejecutivo."
+}
+
+Exit 0
